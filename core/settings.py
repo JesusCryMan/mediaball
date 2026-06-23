@@ -25,8 +25,11 @@ SECRET_KEY = 'django-insecure-%f2^om050oq-s1n93p&pe5+m0k5j!njy%1hy5q9&e!&m97-*ul
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    'mediaball-1.onrender.com',
+    'localhost',
+    '127.0.0.1'
+]
 
 # Application definition
 
