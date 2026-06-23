@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}KBL — Kabanbay League{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #111827; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #f97316; border-radius: 3px; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans antialiased min-h-screen flex flex-col">
+
+    <nav class="bg-gray-950 border-b border-gray-800 sticky top-0 z-50 shadow-2xl backdrop-blur-md bg-opacity-95">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                
+                <a href="{% url 'index' %}" class="flex items-center gap-3 hover:opacity-90 transition group">
+                    <div class="bg-gradient-to-tr from-orange-500 to-orange-400 text-gray-950 font-black px-3 py-1 rounded-lg text-lg tracking-wider shadow-lg shadow-orange-500/20">
+                        KBL 3x3
+                    </div>
+                </a>
+                
+                <div class="flex overflow-x-auto gap-1 py-1 no-scrollbar text-sm font-semibold">
+                    <a href="{% url 'index' %}" data-url="{% url 'index' %}" class="nav-link px-4 py-2 rounded-lg text-gray-400 hover:text-white transition whitespace-nowrap">Главная</a>
+                    <a href="{% url 'matches' %}" data-url="{% url 'matches' %}" class="nav-link px-4 py-2 rounded-lg text-gray-400 hover:text-white transition whitespace-nowrap">Расписание</a>
+                    <a href="{% url 'teams' %}" data-url="{% url 'teams' %}" class="nav-link px-4 py-2 rounded-lg text-gray-400 hover:text-white transition whitespace-nowrap">Команды</a>
+                    <a href="{% url 'players_list' %}" data-url="{% url 'players_list' %}" class="nav-link px-4 py-2 rounded-lg text-gray-400 hover:text-white transition whitespace-nowrap">Игроки</a>
+                    <a href="{% url 'stats' %}" data-url="{% url 'stats' %}" class="nav-link px-4 py-2 rounded-lg text-gray-400 hover:text-white transition whitespace-nowrap">Статистика</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-gray-950 border-t border-gray-800 py-8 text-center mt-auto">
+        <p class="text-xs text-gray-500 uppercase tracking-widest">© 2026 Kabanbay Basketball League</p>
+    </footer>
+
+    <script>
+        // Универсальный подсветчик активной ссылки
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.nav-link').forEach(link => {
+            if (link.getAttribute('data-url') === currentPath) {
+                link.classList.add('bg-orange-500', 'text-gray-950', 'shadow-lg', 'shadow-orange-500/20');
+                link.classList.remove('text-gray-400');
+            }
+        });
+    </script>
+</body>
+</html>

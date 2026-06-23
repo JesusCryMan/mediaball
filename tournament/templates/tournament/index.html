@@ -1,0 +1,126 @@
+{% extends 'tournament/base.html' %}
+
+{% block title %}KBL 3x3 — Главная{% endblock %}
+
+{% block content %}
+<div class="relative bg-gradient-to-br from-orange-600 via-amber-800 to-gray-950 rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl mb-8 overflow-hidden border border-orange-500/10">
+    <div class="relative z-10 max-w-2xl text-center sm:text-left flex flex-col items-center sm:items-start gap-4">
+        
+        <span class="inline-flex items-center gap-1.5 bg-gray-950/80 text-orange-400 border border-orange-500/30 text-[10px] font-black uppercase px-3 py-1.5 rounded-full tracking-widest animate-pulse">
+            <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
+            Оживание регулярного чемпионата
+        </span>
+        
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-white uppercase tracking-tight leading-none">
+            Медиалига 3х3 — <span class="text-orange-400">1 Сезон</span>
+        </h1>
+        
+        <p class="text-gray-300 text-xs sm:text-sm md:text-base font-medium max-w-lg">
+            Добро пожаловать на официальный портал Kabanbay Basketball League. Следи за турнирной таблицей, расписанием матчей и подробной статистикой игроков в реальном времени.
+        </p>
+
+        <div class="relative group mt-2">
+            <a href="https://wa.me/77716384160?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%BF%D0%BE%D0%B4%D0%B0%D1%82%D1%8C%20%D0%B7%D0%B0%D1%8F%D0%B2%D0%BA%D1%83%20%D0%BD%D0%B0%20KBL%203x3." 
+               target="_blank" 
+               class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-gray-950 font-black text-xs uppercase tracking-wider px-6 py-3 rounded-xl transition duration-200 shadow-lg shadow-orange-500/20 no-underline">
+                <i class="fa-solid fa-paper-plane"></i> Подать заявку
+            </a>
+            
+            <div class="absolute left-1/2 sm:left-0 -translate-x-1/2 sm:translate-x-0 top-full mt-2 w-64 bg-gray-950 border border-gray-800 p-3 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-30 pointer-events-none sm:pointer-events-auto">
+                <p class="text-[10px] text-gray-500 uppercase font-bold tracking-wider mb-1">Менеджер лиги:Алимжан Ж.</p>
+                <div class="text-sm font-extrabold text-orange-400 font-mono">
+                    +7 771 638 4160
+                </div>
+                <p class="text-xs text-gray-400 mt-0.5">Алимжан Ж.</p>
+            </div>
+        </div>
+    </div>
+    
+    <i class="fa-solid fa-basketball absolute -right-8 -bottom-10 text-[180px] sm:text-[240px] text-orange-500/5 rotate-12 pointer-events-none"></i>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+    
+    <div class="lg:col-span-2 space-y-4">
+        <div class="flex items-center gap-2 px-1">
+            <i class="fa-solid fa-list-ol text-orange-500"></i>
+            <h2 class="text-lg font-black text-white uppercase tracking-wider">Положение команд</h2>
+        </div>
+        
+        <div class="bg-gray-950 rounded-2xl border border-gray-800 shadow-xl overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse whitespace-nowrap">
+                    <thead>
+                        <tr class="bg-gray-900/40 border-b border-gray-800 text-[10px] sm:text-xs font-bold tracking-wider text-gray-400 uppercase">
+                            <th class="py-3.5 px-3 text-center w-12">Место</th>
+                            <th class="py-3.5 px-4">Команда</th>
+                            <th class="py-3.5 px-4 text-center">Игры</th>
+                            <th class="py-3.5 px-4 text-center text-emerald-400">В</th>
+                            <th class="py-3.5 px-4 text-center text-red-400">П</th>
+                            <th class="py-3.5 px-4 text-center text-orange-400 font-bold bg-orange-500/5">Очки</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-800/40 text-xs sm:text-sm font-medium">
+                        {% for team in table_data %}
+                        <tr class="hover:bg-gray-900/20 transition">
+                            <td class="py-3.5 px-3 text-center font-bold font-mono text-gray-400">{{ forloop.counter }}</td>
+                            <td class="py-3.5 px-4 font-black text-white uppercase tracking-wide">{{ team.name }}</td>
+                            <td class="py-3.5 px-4 text-center text-gray-300 font-mono">{{ team.games_played|default:0 }}</td>
+                            <td class="py-3.5 px-4 text-center text-emerald-400/90 font-mono">{{ team.wins|default:0 }}</td>
+                            <td class="py-3.5 px-4 text-center text-red-400/90 font-mono">{{ team.losses|default:0 }}</td>
+                            <td class="py-3.5 px-4 text-center font-black text-orange-400 bg-orange-500/5 font-mono">{{ team.points|default:0 }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-10 text-gray-500 italic bg-gray-950/20 text-xs">
+                                Команды ещё не провели ни одного матча в этом сезоне.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="space-y-4">
+        <div class="flex items-center gap-2 px-1">
+            <i class="fa-solid fa-fire text-orange-500"></i>
+            <h2 class="text-lg font-black text-white uppercase tracking-wider">Матч недели</h2>
+        </div>
+        
+        <div class="bg-gray-950 border border-gray-800 rounded-2xl p-5 shadow-xl text-center relative overflow-hidden flex flex-col justify-between min-h-[220px]">
+            <div class="absolute inset-0 bg-gradient-to-b from-orange-500/5 to-transparent pointer-events-none"></div>
+            
+            <div class="relative z-10">
+                <span class="text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-0.5 rounded-full font-black uppercase tracking-widest">
+                    Анонс тура
+                </span>
+                
+                <div class="flex items-center justify-center gap-4 my-6">
+                    <div class="flex flex-col items-center max-w-[100px]">
+                        <div class="w-10 h-10 bg-gray-900 border border-gray-800 rounded-xl flex items-center justify-center text-gray-400 mb-2">
+                            <i class="fa-solid fa-users text-sm"></i>
+                        </div>
+                        <span class="font-extrabold text-white text-xs uppercase tracking-wide truncate w-full text-center">TBD</span>
+                    </div>
+                    
+                    <span class="bg-gray-900 border border-gray-800 text-gray-500 text-[10px] px-2.5 py-1 rounded-md font-black tracking-tighter">VS</span>
+                    
+                    <div class="flex flex-col items-center max-w-[100px]">
+                        <div class="w-10 h-10 bg-gray-900 border border-gray-800 rounded-xl flex items-center justify-center text-gray-400 mb-2">
+                            <i class="fa-solid fa-users text-sm"></i>
+                        </div>
+                        <span class="font-extrabold text-white text-xs uppercase tracking-wide truncate w-full text-center">TBD</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-900/60 border border-gray-800/60 rounded-xl p-2.5 text-xs text-gray-400 font-medium">
+                Расписание формируется администрацией лиги
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

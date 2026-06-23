@@ -1,0 +1,104 @@
+{% extends 'tournament/base.html' %}
+{% load static %}
+
+{% block title %}KBL 3x3 — Все Команды{% endblock %}
+
+{% block content %}
+<div class="mb-8 text-center sm:text-left">
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center justify-center sm:justify-start gap-2">
+        <i class="fa-solid fa-basketball text-orange-500"></i> Участники Kabanbay League
+    </h1>
+    <p class="text-xs sm:text-sm text-gray-400 mt-1">Каждая команда состоит из игроков разных уровней подготовки</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for team in teams %}
+    <div class="bg-gray-950 border border-gray-800 rounded-2xl p-5 shadow-xl flex flex-col justify-between hover:border-orange-500/30 hover:scale-[1.01] transition duration-200">
+        
+        <!-- Заголовок карточки с логотипом -->
+        <div class="flex items-center gap-4 border-b border-gray-800/60 pb-4 mb-4">
+            {% if team.logo %}
+                <img src="{{ team.logo.url }}" class="w-14 h-14 rounded-xl object-cover bg-gray-900 border border-gray-800 shadow-md">
+            {% else %}
+                <div class="w-14 h-14 rounded-xl bg-orange-500/10 flex items-center justify-center border border-orange-500/20 shadow-inner">
+                    <i class="fa-solid fa-users text-orange-500 text-xl"></i>
+                </div>
+            {% endif %}
+            <div>
+                <h3 class="text-lg font-black text-white tracking-wide uppercase">{{ team.name }}</h3>
+                <span class="text-xs text-gray-500 font-mono">ID Лиги: #KBL-{{ team.id }}</span>
+            </div>
+        </div>
+
+        <!-- Уровни игроков (Ростер) -->
+        <div class="space-y-3 flex-grow">
+            
+            <!-- БЛОК: ПРОФИ -->
+            <div class="bg-gray-900/40 border border-gray-800/40 rounded-xl p-3 flex items-center justify-between">
+                <div class="flex items-center gap-2.5 truncate w-full">
+                    <span class="w-2 h-2 rounded-full bg-red-500 shadow-md shadow-red-500/50 flex-shrink-0"></span>
+                    <div class="truncate w-full">
+                        <span class="text-[10px] text-red-400 font-black uppercase block tracking-wider">Профи</span>
+                        <span class="text-sm font-bold text-gray-200 truncate block">
+                            {% for player in team.players.all %}
+                                {% if player.category|upper == 'PRO' %}
+                                    <a href="{% url 'player_detail' player.id %}" class="text-white hover:text-orange-500 hover:underline transition duration-150">
+                                        {{ player.name }}
+                                    </a>
+                                    {% if player.nickname %} <span class="text-xs text-orange-500 font-mono">"{{ player.nickname }}"</span>{% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- БЛОК: МЕДИА -->
+            <div class="bg-gray-900/40 border border-gray-800/40 rounded-xl p-3 flex items-center justify-between">
+                <div class="flex items-center gap-2.5 truncate w-full">
+                    <span class="w-2 h-2 rounded-full bg-purple-500 shadow-md shadow-purple-500/50 flex-shrink-0"></span>
+                    <div class="truncate w-full">
+                        <span class="text-[10px] text-purple-400 font-black uppercase block tracking-wider">Медиа</span>
+                        <span class="text-sm font-bold text-gray-200 truncate block">
+                            {% for player in team.players.all %}
+                                {% if player.category|upper == 'MEDIA' %}
+                                    <a href="{% url 'player_detail' player.id %}" class="text-white hover:text-orange-500 hover:underline transition duration-150">
+                                        {{ player.name }}
+                                    </a>
+                                    {% if player.nickname %} <span class="text-xs text-orange-500 font-mono">"{{ player.nickname }}"</span>{% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- БЛОК: ЛЮБИТЕЛЬ -->
+            <div class="bg-gray-900/40 border border-gray-800/40 rounded-xl p-3 flex items-center justify-between">
+                <div class="flex items-center gap-2.5 truncate w-full">
+                    <span class="w-2 h-2 rounded-full bg-blue-500 shadow-md shadow-blue-500/50 flex-shrink-0"></span>
+                    <div class="truncate w-full">
+                        <span class="text-[10px] text-blue-400 font-black uppercase block tracking-wider">Любитель</span>
+                        <span class="text-sm font-bold text-gray-200 truncate block">
+                            {% for player in team.players.all %}
+                                {% if player.category|upper == 'AMATEUR' %}
+                                    <a href="{% url 'player_detail' player.id %}" class="text-white hover:text-orange-500 hover:underline transition duration-150">
+                                        {{ player.name }}
+                                    </a>
+                                    {% if player.nickname %} <span class="text-xs text-orange-500 font-mono">"{{ player.nickname }}"</span>{% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-span-full text-center py-12 bg-gray-950 rounded-2xl border border-gray-800 text-gray-500 italic">
+        Команды еще не добавлены в админ-панель.
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'tournament/base.html' %}
+{% load static %}
+
+{% block title %}KBL 3x3 — Все Игроки{% endblock %}
+
+{% block content %}
+<div class="mb-8 text-center sm:text-left">
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center justify-center sm:justify-start gap-2">
+        <i class="fa-solid fa-user-astronaut text-orange-500"></i> Ростер лиги KBL
+    </h1>
+    <p class="text-xs sm:text-sm text-gray-400 mt-1">Официальные карточки участников турнира</p>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    {% for player in players %}
+    <a href="{% url 'player_detail' player.id %}" id="player-{{ player.id }}" 
+       class="bg-gray-950 border border-gray-800 rounded-2xl p-5 flex flex-col items-center relative overflow-hidden shadow-xl hover:border-orange-500/40 hover:scale-[1.02] hover:shadow-orange-500/5 transition duration-300 group block">
+        
+        <div class="absolute -top-3 -right-3 opacity-5 font-black text-4xl uppercase tracking-wider text-white pointer-events-none select-none group-hover:opacity-10 transition duration-300">
+            {{ player.category }}
+        </div>
+
+        <div class="w-24 h-24 rounded-full bg-gray-900 border-2 border-gray-800 p-1 mb-4 group-hover:border-orange-500 transition duration-300 overflow-hidden">
+            {% if player.avatar %}
+                <img src="{{ player.avatar.url }}" class="w-full h-full object-cover rounded-full group-hover:scale-105 transition duration-300">
+            {% else %}
+                <div class="w-full h-full flex items-center justify-center bg-gray-900 text-gray-700 rounded-full">
+                    <i class="fa-solid fa-user text-3xl"></i>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="text-center w-full flex flex-col flex-grow justify-between">
+            <div>
+                <h3 class="text-lg font-bold text-white tracking-wide truncate group-hover:text-orange-500 transition duration-150">
+                    {{ player.name }}
+                </h3>
+                
+                {% if player.nickname %}
+                    <p class="text-orange-500 font-mono text-sm font-bold mb-2">"{{ player.nickname }}"</p>
+                {% else %}
+                    <p class="text-gray-600 font-mono text-xs mb-2">- без никнейма -</p>
+                {% endif %}
+
+                <p class="text-xs text-gray-400 font-medium mb-2">
+                    <i class="fa-solid fa-shirt text-gray-600 mr-1"></i> {{ player.team.name }}
+                </p>
+
+                <div class="flex items-center justify-center gap-2 text-[11px] text-gray-500 font-mono mb-4 border-t border-gray-900 pt-2">
+                    <span>{{ player.position|default:"Игрок" }}</span>
+                    {% if player.height %}
+                        <span class="text-gray-700">•</span>
+                        <span>{{ player.height }} см</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="mt-auto">
+                {% if player.category|upper == 'PRO' %}
+                    <span class="text-[10px] font-black bg-red-500/10 text-red-400 border border-red-500/20 px-2.5 py-1 rounded-md uppercase tracking-wider">Профи</span>
+                {% elif player.category|upper == 'MEDIA' %}
+                    <span class="text-[10px] font-black bg-purple-500/10 text-purple-400 border border-purple-500/20 px-2.5 py-1 rounded-md uppercase tracking-wider">Медиа</span>
+                {% else %}
+                    <span class="text-[10px] font-black bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2.5 py-1 rounded-md uppercase tracking-wider">Любитель</span>
+                {% endif %}
+            </div>
+        </div>
+    </a>
+    {% empty %}
+    <div class="col-span-full text-center py-12 bg-gray-950 rounded-2xl border border-gray-800 text-gray-500 italic">
+        Игроки пока не внесены в базу данных турнира.
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

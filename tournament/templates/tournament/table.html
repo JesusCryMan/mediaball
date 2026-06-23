@@ -1,0 +1,149 @@
+{% extends 'tournament/base.html' %}
+
+{% block title %}KBL — Турнирная Таблица{% endblock %}
+
+{% block content %}
+<div class="mb-6 text-center sm:text-left">
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center justify-center sm:justify-start gap-2">
+        <i class="fa-solid fa-trophy text-orange-500"></i> Турнирное Положение КБЛ
+    </h1>
+    <p class="text-sm text-gray-400 mt-1">Ранжирование: Победы ➡️ Разница очков (+/-) ➡️ Процент побед</p>
+</div>
+
+<div class="bg-gray-950 rounded-2xl border border-gray-800 shadow-2xl overflow-hidden mb-8">
+    <div class="overflow-x-auto custom-scrollbar">
+        <table class="w-full text-left border-collapse whitespace-nowrap">
+            <thead>
+                <tr class="bg-gray-900/50 border-b border-gray-800 text-xs sm:text-sm font-bold tracking-wider text-gray-400 uppercase">
+                    <th class="py-4 px-4 text-center w-12">Место</th>
+                    <th class="py-4 px-4">Команда</th>
+                    <th class="py-4 px-4 text-center">Игры</th>
+                    <th class="py-4 px-4 text-center text-green-400">В</th>
+                    <th class="py-4 px-4 text-center text-red-400">П</th>
+                    <th class="py-4 px-4 text-center">Очки (+/-)</th>
+                    <th class="py-4 px-4 text-center text-orange-400">% Побед</th>
+                    <th class="py-4 px-4 text-center w-24">Состав</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-800/60 text-sm sm:text-base font-medium">
+                {% for row in table_data %}
+                <tr class="hover:bg-gray-900/40 transition duration-150">
+                    <td class="py-4 px-4 text-center">
+                        {% if row.place == 1 %}
+                            <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-yellow-500/10 text-yellow-500 font-black border border-yellow-500/30">🥇 1</span>
+                        {% elif row.place == 2 %}
+                            <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gray-400/10 text-gray-300 font-black border border-gray-400/30">🥈 2</span>
+                        {% elif row.place == 3 %}
+                            <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-700/10 text-amber-600 font-black border border-amber-700/30">🥉 3</span>
+                        {% else %}
+                            <span class="text-gray-500 font-semibold font-mono">{{ row.place }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="py-4 px-4">
+                        <div class="flex items-center gap-3 font-bold text-white">
+                            {% if row.team.logo %}
+                                <img src="{{ row.team.logo.url }}" class="w-8 h-8 rounded-md object-cover bg-gray-800 shadow-inner" alt="logo">
+                            {% else %}
+                                <div class="w-8 h-8 rounded-md bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
+                                    <i class="fa-solid fa-users text-orange-500 text-xs"></i>
+                                </div>
+                            {% endif %}
+                            <span class="hover:text-orange-400 cursor-pointer transition uppercase tracking-wide" onclick="toggleRoster('roster-{{ row.team.id }}')">
+                                {{ row.team.name }}
+                            </span>
+                        </div>
+                    </td>
+                    <td class="py-4 px-4 text-center text-gray-300 font-mono">{{ row.games_played }}</td>
+                    <td class="py-4 px-4 text-center font-mono font-bold text-green-400 bg-green-500/5">{{ row.wins }}</td>
+                    <td class="py-4 px-4 text-center font-mono font-bold text-red-400 bg-red-500/5">{{ row.losses }}</td>
+                    <td class="py-4 px-4 text-center font-mono">
+                        {% if row.point_difference > 0 %}
+                            <span class="text-green-400 font-bold">+{{ row.point_difference }}</span>
+                        {% elif row.point_difference < 0 %}
+                            <span class="text-red-400 font-bold">{{ row.point_difference }}</span>
+                        {% else %}
+                            <span class="text-gray-400">0</span>
+                        {% endif %}
+                        <span class="text-xs text-gray-500 block font-sans">({{ row.points_scored }}:{{ row.points_conceded }})</span>
+                    </td>
+                    <td class="py-4 px-4 text-center font-mono font-black text-orange-400">{{ row.win_percentage }}%</td>
+                    <td class="py-4 px-4 text-center">
+                        <button onclick="toggleRoster('roster-{{ row.team.id }}')" class="bg-gray-900 border border-gray-800 hover:border-orange-500/50 hover:bg-gray-800 text-gray-300 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition flex items-center justify-center gap-1 mx-auto shadow-sm">
+                            <span>Ростер</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] text-orange-500 transition-transform duration-200" id="icon-roster-{{ row.team.id }}"></i>
+                        </button>
+                    </td>
+                </tr>
+
+                <tr id="roster-{{ row.team.id }}" class="hidden bg-gray-950/40">
+                    <td colspan="8" class="p-4 sm:p-6 border-b border-gray-800/60 bg-gray-950/60">
+                        <div class="flex items-center justify-between border-b border-gray-800 pb-2 mb-4">
+                            <div class="text-xs font-black text-orange-500 uppercase tracking-widest">
+                                <i class="fa-solid fa-basketball-ball mr-1"></i> Состав трио команды
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {% for player in row.team.players.all %}
+                            <div class="bg-gray-900/90 border rounded-xl p-4 flex items-center justify-between hover:scale-[1.01] transition-all duration-200
+                                {% if row.place == 1 %}border-yellow-500/20 hover:border-yellow-500/60
+                                {% elif row.place == 2 %}border-gray-400/20 hover:border-gray-400/60
+                                {% elif row.place == 3 %}border-amber-700/20 hover:border-amber-700/60
+                                {% else %}border-gray-800 hover:border-orange-500/40{% endif %}">
+                                <div class="flex items-center gap-3 truncate">
+                                    {% if player.avatar %}
+                                        <img src="{{ player.avatar.url }}" class="w-11 h-11 rounded-full object-cover border-2 border-gray-800 shadow-md">
+                                    {% else %}
+                                        <div class="w-11 h-11 rounded-full bg-gray-800 flex items-center justify-center border border-gray-700 text-gray-500">
+                                            <i class="fa-solid fa-user text-sm"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div class="truncate">
+                                        <div class="font-bold text-white text-sm sm:text-base truncate">
+                                            {{ player.name }}
+                                            {% if player.nickname %}
+                                                <span class="text-xs text-orange-500 font-mono font-bold">"{{ player.nickname }}"</span>
+                                            {% endif %}
+                                        </div>
+                                        {% if player.category == 'PRO' %}
+                                            <span class="inline-block mt-1 bg-red-500/10 text-red-400 text-[9px] font-black px-1.5 py-0.5 rounded uppercase border border-red-500/20 tracking-wider">Профи</span>
+                                        {% elif player.category == 'MEDIA' %}
+                                            <span class="inline-block mt-1 bg-purple-500/10 text-purple-400 text-[9px] font-black px-1.5 py-0.5 rounded uppercase border border-purple-500/20 tracking-wider">Медиа</span>
+                                        {% else %}
+                                            <span class="inline-block mt-1 bg-blue-500/10 text-blue-400 text-[9px] font-black px-1.5 py-0.5 rounded uppercase border border-blue-500/20 tracking-wider">Любитель</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <a href="{% url 'stats' %}?category={{ player.category }}" class="text-gray-500 hover:text-orange-500 p-2 transition-colors">
+                                    <i class="fa-solid fa-chart-simple text-base"></i>
+                                </a>
+                            </div>
+                            {% empty %}
+                            <div class="text-xs text-gray-500 italic py-2 col-span-3 text-center">Состав пуст.</div>
+                            {% endfor %}
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center py-16 text-gray-500 italic bg-gray-950/20">В лиге KBL пока нет зарегистрированных команд.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function toggleRoster(id) {
+        const rosterRow = document.getElementById(id);
+        const icon = document.getElementById('icon-' + id);
+        if (rosterRow.classList.contains('hidden')) {
+            rosterRow.classList.remove('hidden');
+            if(icon) icon.style.transform = 'rotate(180deg)';
+        } else {
+            rosterRow.classList.add('hidden');
+            if(icon) icon.style.transform = 'rotate(0deg)';
+        }
+    }
+</script>
+{% endblock %}

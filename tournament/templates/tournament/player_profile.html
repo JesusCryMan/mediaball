@@ -1,0 +1,101 @@
+{% extends 'tournament/base.html' %}
+{% load static %}
+
+{% block title %}{{ player.name }} — Официальный профайл KBL{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+    <a href="{% url 'players_list' %}" class="text-gray-400 hover:text-orange-500 text-sm inline-flex items-center gap-2 transition-all duration-200 group">
+        <i class="fa-solid fa-arrow-left group-hover:-translate-x-1 transition-transform"></i> Назад к ростеру лиги
+    </a>
+    <div class="flex items-center gap-2 text-xs font-mono text-gray-500 bg-gray-950/60 border border-gray-900 px-3 py-1.5 rounded-xl">
+        <span>Профайл игрока ID: #KBL-P{{ player.id }}</span>
+    </div>
+</div>
+
+<div class="bg-gradient-to-br from-gray-50 to-gray-200 rounded-[2.5rem] p-6 md:p-12 text-gray-900 shadow-2xl relative overflow-hidden border border-white/40 mb-8" 
+     style="background-image: radial-gradient(#d1d5db 1.5px, transparent 1.5px); background-size: 24px 24px;">
+    
+    <div class="absolute right-0 top-0 translate-x-1/4 -translate-y-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute left-0 bottom-0 -translate-x-1/4 translate-y-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="mb-8 border-b-[3px] border-orange-500 pb-2 inline-block">
+        <h1 class="text-3xl md:text-5xl font-black tracking-tight text-black uppercase">Профиль</h1>
+    </div>
+
+    <div class="bg-white/90 backdrop-blur-md border border-gray-200/80 rounded-[3rem] p-6 md:p-10 flex flex-col lg:flex-row items-center lg:items-start gap-8 max-w-6xl mx-auto shadow-xl relative z-10">
+        
+        <div class="w-48 h-48 md:w-60 md:h-60 rounded-full border-4 border-white shadow-2xl overflow-hidden flex-shrink-0 bg-gradient-to-b from-gray-100 to-gray-300 p-1 group relative">
+            {% if player.avatar %}
+                <img src="{{ player.avatar.url }}" class="w-full h-full object-cover rounded-full group-hover:scale-105 transition duration-500">
+            {% else %}
+                <div class="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400 rounded-full">
+                    <i class="fa-solid fa-user text-7xl"></i>
+                </div>
+            {% endif %}
+            <div class="absolute bottom-2 left-1/2 -translate-x-1/2 transform">
+                {% if player.category|upper == 'PRO' %}
+                    <span class="shadow-lg text-[9px] font-black bg-red-600 text-white px-3 py-1 rounded-full uppercase tracking-widest border border-red-500">PRO</span>
+                {% elif player.category|upper == 'MEDIA' %}
+                    <span class="shadow-lg text-[9px] font-black bg-purple-600 text-white px-3 py-1 rounded-full uppercase tracking-widest border border-purple-500">MEDIA</span>
+                {% else %}
+                    <span class="shadow-lg text-[9px] font-black bg-blue-600 text-white px-3 py-1 rounded-full uppercase tracking-widest border border-blue-500">AMATEUR</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="flex-grow text-center lg:text-left w-full mt-2">
+            <h2 class="text-3xl md:text-5xl font-black tracking-tight text-gray-950 mb-1 uppercase font-sans">{{ player.name }}</h2>
+            <div class="flex items-center justify-center lg:justify-start gap-3 mb-8">
+                {% if player.team.logo %}
+                    <img src="{{ player.team.logo.url }}" class="w-8 h-8 object-cover rounded-xl shadow-sm bg-gray-900 p-0.5">
+                {% else %}
+                    <div class="w-8 h-8 rounded-xl bg-orange-500/10 flex items-center justify-center border border-orange-500/20 text-orange-600">
+                        <i class="fa-solid fa-users text-xs"></i>
+                    </div>
+                {% endif %}
+                <span class="text-gray-700 font-extrabold text-xl tracking-wide uppercase">{{ player.team.name }}</span>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 border-t border-gray-200/80 pt-8">
+                <div class="bg-gray-50/50 p-5 rounded-2xl border border-gray-200/50 shadow-inner">
+                    <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Личные параметры</h4>
+                    <ul class="space-y-3 text-base font-semibold text-gray-800">
+                        <li class="flex justify-between border-b border-gray-200 pb-1.5"><span>Возраст</span><span class="font-black text-gray-950">{% if player.age %}{{ player.age }} лет{% else %}-{% endif %}</span></li>
+                        <li class="flex justify-between border-b border-gray-200 pb-1.5"><span>Рост</span><span class="font-black text-gray-950">{% if player.height %}{{ player.height }} см{% else %}-{% endif %}</span></li>
+                        <li class="flex justify-between"><span>Вес</span><span class="font-black text-gray-950">{% if player.weight %}{{ player.weight }} кг{% else %}-{% endif %}</span></li>
+                    </ul>
+                </div>
+                <div class="bg-gray-50/50 p-5 rounded-2xl border border-gray-200/50 shadow-inner">
+                    <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Игровые параметры</h4>
+                    <ul class="space-y-3 text-base font-semibold text-gray-800">
+                        <li class="flex justify-between border-b border-gray-200 pb-1.5"><span>Позиция</span><span class="font-black text-gray-950">{{ player.position|default:"-" }}</span></li>
+                        <li class="flex justify-between border-b border-gray-200 pb-1.5"><span>Ведущая рука</span><span class="font-black text-gray-950">{{ player.leading_hand|default:"-" }}</span></li>
+                        <li class="flex justify-between"><span>Никнейм</span><span class="font-mono font-black text-orange-600">{% if player.nickname %}"{{ player.nickname }}"{% else %}-{% endif %}</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="bg-gray-950 border border-gray-800 rounded-3xl p-6 lg:col-span-1">
+        <h3 class="text-lg font-bold text-white mb-4">Статистика KBL</h3>
+        <div class="space-y-4">
+            <div class="bg-gray-900/60 p-4 rounded-xl flex justify-between"><span class="text-gray-400">Сыграно игр</span><span class="text-2xl font-black text-white">{{ player.stats.count }}</span></div>
+            <div class="bg-gray-900/60 p-4 rounded-xl flex justify-between"><span class="text-gray-400">Всего очков</span><span class="text-2xl font-black text-orange-500">{{ total_points|default:0 }}</span></div>
+        </div>
+    </div>
+    <div class="bg-gray-950 border border-gray-800 rounded-3xl p-6 lg:col-span-2">
+        <h3 class="text-lg font-bold text-white mb-4">Матчи {{ player.team.name }}</h3>
+        <div class="space-y-3">
+            {% for match in player.team.matches_as_team1.all|slice:":3" %}
+                <div class="bg-gray-900/40 p-3.5 rounded-xl flex justify-between"><span>{{ match.team_1.name }} vs {{ match.team_2.name }}</span><span class="text-orange-500">{{ match.score_1 }}:{{ match.score_2 }}</span></div>
+            {% empty %}
+                <div class="text-gray-600 italic">Матчи не найдены.</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
